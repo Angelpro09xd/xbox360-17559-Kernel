@@ -29,6 +29,8 @@ about how the system works and are fine to write up publicly. That is what the f
 | Path | What it is |
 |---|---|
 | `dump/kernel_17559.bin` | Kernel memory, `0x80000000`–`0x801A8000` (1,736,704 bytes). File offset = `address - 0x80000000`. |
+| `dump/xam_17559.bin` | xam.xex memory, `0x81670000`–`0x816F8000` (557,056 bytes). Covers the update and avatar entry points. |
+| `symbols/xam_ordinals.txt` `.json` | `ordinal → name` for all 1208 xam exports, from the XDK's xav.lib / xapilib.lib. |
 | `symbols/exports_live.txt` | `ordinal,ADDRESS` — 921 ordinals resolved on a live console. |
 | `symbols/ordinals.txt` `.json` | `ordinal → name` — 905 exports, parsed out of the XDK's import library. |
 | `symbols/symbols.txt` | `ADDRESS → name` — the two joined, 887 functions. |
@@ -47,6 +49,10 @@ independent sources:
    `ordinal → name` for every export.
 2. **The console itself** answers `XexGetProcedureAddress` for each ordinal, giving
    `ordinal → address` for the exact build in front of you.
+
+The same trick works for **xam.xex**: `xav.lib` and `xapilib.lib` carry its imports, giving
+`ordinal → name` for all 1208 of its exports, and `GetProcAddress(GetModuleHandle("xam.xex"),
+(LPCSTR)ordinal)` resolves them on the console.
 
 Join them and you get `name → address` across the whole exported surface. That is enough to
 symbolicate every call target in the disassembly — including calls made *by* internal,
